@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.rcParams.update({'font.size': 16})
+
 def toxin_cycling(
     Vb_per_kg, Vd_per_kg, infant_weight, SA_per_kg, Vd_full_per_BSA, P, 
     Cb_0, num_cycles, fill_duration, dwell_duration, drain_duration, dt, plot=False
@@ -86,17 +88,17 @@ def toxin_cycling(
         plt.plot(time_b, Cd, 'r--', linewidth=1.5, label='Dialysis Fluid (C_d)')
         plt.plot(time_b, DP_ratio, 'g--', linewidth=1.5, label='D/P Ratio')
         plt.xlabel('Time (minutes)')
-        plt.ylabel('Toxin Concentration (arbitrary units)')
+        plt.ylabel('Solute Concentration (% initial)')
         plt.legend()
-        plt.title(f'Peritoneal Dialysis Toxin Clearance in an Infant: Final = {Cb[-1]}')
+        plt.title(f'Peritoneal Dialysis Solute Clearance in an Infant: Final = {Cb[-1]:0.3f}%')
 
         # Dialysate volume plot
         plt.subplot(2, 1, 2)
         plt.plot(time_d, Vd, 'g', linewidth=1.5)
         plt.xlabel('Time (minutes)')
         plt.ylabel('Dialysate Volume (mL)')
-        plt.title('Dialysate Volume (V_d)')
-        plt.grid(True)
+        plt.title('Dialysate Volume')
+        plt.grid(False)
 
         plt.tight_layout()
         plt.show()
@@ -190,20 +192,21 @@ def toxin_continuous(
         plt.plot(time_b, Cd, 'r--', linewidth=1.5, label='Dialysis Fluid (C_d)')
         plt.plot(time_b, DP_ratio, 'g--', linewidth=1.5, label='D/P Ratio')
         plt.xlabel('Time (minutes)')
-        plt.ylabel('Toxin Concentration (arbitrary units)')
-        plt.legend()
-        plt.title(f'Peritoneal Dialysis Toxin Clearance in an Infant: Final = {Cb[-1]}')
+        plt.ylabel('Solute Concentration (% initial)',)
+        plt.legend(fontsize=12)
+        plt.title(f'Peritoneal Dialysis Solute Clearance in an Infant: Final = {Cb[-1]:.3f}%')
 
         # Dialysate volume plot
         plt.subplot(2, 1, 2)
         plt.plot(time_d, Vd, 'g', linewidth=1.5)
         plt.xlabel('Time (minutes)')
         plt.ylabel('Dialysate Volume (mL)')
-        plt.title('Dialysate Volume (V_d)')
-        plt.grid(True)
+        plt.title('Dialysate Volume')
+        plt.grid(False)
 
         plt.tight_layout()
         plt.show()
+
 
 
 if __name__ == '__main__':
@@ -211,29 +214,33 @@ if __name__ == '__main__':
     plot = True
 
     # Parameters for Cycling
-
+    
     Vb_per_kg = 80  # Blood volume per kg of infant (mL/kg)
     infant_weight_kg = 5  # Infant weight in kg
     SA_constant = 533  # Surface area constant (cm^2)
     Vd_full_per_BSA = 800 / 10000  # Maximum dialysate volume (mL/cm^2)
     Cb_0 = 1  # Initial blood toxin concentration (mg/mL)
     P = 0.0005  # Permeability constant (mL/min/cm^2) #calculated from 60 min D/P ratio for creatinine from Pediatric Dialysis textbook page 200
-    dt = 0.1  # Time step for simulation (minutes)
+    dt = 0.01  # Time step for simulation (minutes)
 
-    Vd_per_kg = 30  # Dialysate volume per kg of infant (mL/kg)
+    Vd_per_kg = 10  # Dialysate volume per kg of infant (mL/kg)
     num_cycles = 10  # Number of dialysis cycles
     fill_duration = 5  # Fill phase duration (minutes)
     dwell_duration = 45  # Dwell phase duration (minutes)
     drain_duration = 10  # Drain phase duration (minutes)
+    dialysate_spent_cycle = num_cycles * infant_weight_kg * Vd_per_kg
+    print(f"Dialysate Spent cyclic = {dialysate_spent_cycle:0.2f} mL")
 
     toxin_cycling(Vb_per_kg, Vd_per_kg, infant_weight_kg, SA_constant, Vd_full_per_BSA, P, Cb_0, num_cycles, fill_duration, dwell_duration, drain_duration, dt, plot=plot)
 
     # Parameters for Continuous 
 
-    Vd_per_kg = 23  # Dialysate volume per kg of infant (mL/kg)
+    Vd_per_kg = 10  # Dialysate volume per kg of infant (mL/kg)
     fill_duration = 5  # Fill phase duration (minutes)
-    drain_rate = 20  # Drain rate (mL/min)
+    drain_rate = 15  # Drain rate (mL/min)          
     total_time = num_cycles * 60  # Total simulation time (minutes)
+    dialysate_spent_continuous = total_time * drain_rate
+    print(f"Dialysate Spent continuous = {dialysate_spent_continuous:0.2f} mL")
 
     toxin_continuous(Vb_per_kg, Vd_per_kg, infant_weight_kg, SA_constant, Vd_full_per_BSA, P, Cb_0, fill_duration, drain_rate, dt, total_time, plot=plot)
 

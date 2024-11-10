@@ -5,13 +5,13 @@ infant_weight = 5;    % kg (Infant weight)
 
 V_b_max = blood_vol * infant_weight;   % Blood volume in mL
 V_d_max = dialysate_vol * infant_weight; % Maximum dialysate volume in mL (constant)
-P = 0.01;                               % Permeability coefficient (mL/min/cm²)
+P = 0.02;                               % Permeability coefficient (mL/min/cm²)
 A = 1000;                               % Surface area (cm²)
 C_b0 = 100;                             % Initial blood toxin concentration (arbitrary units)
 drain_rate = 5;                         % Drain rate (mL/min)
 
 % Time settings
-dt = 0.1;                               % Time step (minutes)
+dt = 0.01;                               % Time step (minutes)
 total_time = 400;                       % Total simulation time (minutes)
 time = 0:dt:total_time;                 % Total time vector
 
@@ -52,19 +52,33 @@ time_d = linspace(0, total_time, length(C_d)); % Time vector for dialysate conce
 figure;
 
 % Blood and Dialysate concentration plot (on the same plot)
-subplot(2,1,1);
+subplot(3,1,1);
 plot(time_b, C_b, 'b', 'LineWidth', 1.5); hold on;
 plot(time_d, C_d, 'r', 'LineWidth', 1.5);
 xlabel('Time (minutes)');
-ylabel('Toxin Concentration (arbitrary units)');
+ylabel('Toxin Concentration (mg/mL)');
 legend('Blood (C_b)', 'Dialysis Fluid (C_d)');
 title('Blood and Dialysis Fluid Toxin Concentrations with Enhanced Diffusion Model');
 grid on;
 
 % Dialysate volume plot (constant volume)
-subplot(2,1,2);
+subplot(3,1,2);
 plot(time_d, V_d, 'g', 'LineWidth', 1.5);
 xlabel('Time (minutes)');
 ylabel('Dialysate Volume (mL)');
 title('Constant Dialysate Volume (V_d)');
+grid on;
+
+% Initialize array to store the ratio of C_d to C_b
+C_ratio = C_d ./ C_b;
+
+% Generate a time vector matching the size of the C_ratio array
+time_ratio = linspace(0, total_time, length(C_ratio));
+
+% Plotting the ratio of C_d to C_b
+subplot(3,1,3);
+plot(time_ratio, C_ratio, 'm', 'LineWidth', 1.5);
+xlabel('Time (minutes)');
+ylabel('Ratio of C_d to C_b');
+title('C_d / C_b');
 grid on;

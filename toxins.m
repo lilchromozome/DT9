@@ -5,15 +5,15 @@ infant_weight = 5; % kg
 
 V_b_max = blood_vol * infant_weight;             % Blood volume in mL
 V_d_max = dialysate_vol * infant_weight;         % Dialysis fluid volume in mL
-k = 0.05;                                        % Diffusion rate constant (mL/min)
-C_b0 = 100;                                      % Initial blood toxin concentration (arbitrary units)
+k = 0.01;                                        % Diffusion rate constant (mL/min)
+C_b0 = 1;                                      % Initial blood toxin concentration (arbitrary units)
 num_cycles = 8;                                 % Number of dialysis cycles
 fill_duration = 5;                               % Fill phase duration (minutes)
 dwell_duration = 45;                             % Dwell phase duration (minutes)
 drain_duration = 10;                             % Drain phase duration (minutes)
 
 % Time settings
-dt = 0.1;                                        % Time step (minutes)
+dt = 0.01;                                        % Time step (minutes)
 total_time = (fill_duration + dwell_duration + drain_duration) * num_cycles;
 time = 0:dt:total_time;                          % Total time vector
 
